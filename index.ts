@@ -27,7 +27,7 @@ interface ITodo {
     getByID(id: number) : void;
 }
 
-abstract class TodoRepository {
+abstract class TodoRepository implements ITodo {
     protected Todos: Todo[];
     constructor(){
         this.Todos = []
@@ -39,9 +39,12 @@ abstract class TodoRepository {
 }
 
 class TodoController extends TodoRepository {
+    protected static self:TodoController;
+    protected static latestID:number;
     protected Todo: object [];
     constructor () {
         super()
+        TodoController.self = this
     }
     public createTodo(todo: createTodoDTO): ResponseMehtod {
         const id = this.Todos.length
@@ -51,6 +54,7 @@ class TodoController extends TodoRepository {
             state: todo.state
         }
         this.Todos.push(newTodo)
+        TodoController.setLatastId(id)
         return {message: "created"}
     } 
     public getList():Todo[] {
@@ -66,14 +70,27 @@ class TodoController extends TodoRepository {
         this.Todos = Todos;
         return {message : "removed todo"}
     }
+    public static getLastID():number {
+        return TodoController.latestID;
+    }
+    public static setLatastId(id :number): void {
+        TodoController.latestID = id;
+        }
+    public static countOfTodos():number {
+        return TodoController.self.Todos.length;
+    }
 }
 
 const todo = new TodoController();
 
 console.log(todo.createTodo({title : " create todo list ", state: State.START }));
+console.log(todo.createTodo({title : " creatfghe todo list ", state: State.START }));
+console.log(todo.createTodo({title : " creafgte todo list ", state: State.START }));
 
 console.log(todo.getList())
 
 console.log(todo.getByID(0))
-console.log(todo.delete(0))
+console.log(todo.delete(1))
 console.log(todo.getByID(0))
+console.log(TodoController.getLastID())
+console.log(TodoController.countOfTodos())
