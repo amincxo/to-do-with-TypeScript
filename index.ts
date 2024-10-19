@@ -56,6 +56,16 @@ class TodoController extends TodoRepository {
     public getList():Todo[] {
         return this.Todos
     }
+    public getByID(id: number): Todo | ResponseMehtod {
+        const todo = this.Todos.find(todo => todo.id == id)
+        if(todo) return todo
+        return {message: "not found todo"}
+    }
+    public delete(id: number): ResponseMehtod {
+        const Todos = this.Todos.filter(todo => todo.id !== id)
+        this.Todos = Todos;
+        return {message : "removed todo"}
+    }
 }
 
 const todo = new TodoController();
@@ -63,3 +73,7 @@ const todo = new TodoController();
 console.log(todo.createTodo({title : " create todo list ", state: State.START }));
 
 console.log(todo.getList())
+
+console.log(todo.getByID(0))
+console.log(todo.delete(0))
+console.log(todo.getByID(0))
